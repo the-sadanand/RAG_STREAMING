@@ -1,0 +1,49 @@
+# ── Never send these to Docker build context ──────────────────────────────────
+
+# Git
+.git/
+.gitignore
+
+# Env & secrets
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments (use the image's pip install instead)
+venv/
+.venv/
+env/
+
+# Tests (not needed at runtime — run via docker-compose exec)
+tests/
+
+# Local data volumes (mounted at runtime, not baked in)
+/data/
+chromadb/
+uploads/
+model_cache/
+
+# Logs
+*.log
+logs/
+
+# Docs & meta (not needed inside the container)
+README.md
+ARCHITECTURE.md
+BENCHMARKS.md
+*.md
+
+# OS artifacts
+.DS_Store
+Thumbs.db

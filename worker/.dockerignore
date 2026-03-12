@@ -1,0 +1,44 @@
+# ── Worker build context excludes ────────────────────────────────────────────
+
+.git/
+.gitignore
+
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+
+# Virtualenvs
+venv/
+.venv/
+env/
+
+# Tests not needed in worker image
+backend/tests/
+
+# Runtime-mounted volumes
+data/
+chromadb/
+uploads/
+model_cache/
+
+# Docs
+*.md
+README*
+
+# Frontend is irrelevant to worker
+frontend/
+
+# OS
+.DS_Store
+Thumbs.db
+*.log

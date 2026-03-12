@@ -1,0 +1,104 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Infra
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      VECTOR_DB_PATH: /data/chromadb
+      UPLOAD_PATH: /data/uploads
+      FRONTEND_URL: http://localhost:3000
+      ANONYMIZED_TELEMETRY: "false"
+      CHROMA_TELEMETRY: "false"
+      SENTENCE_TRANSFORMERS_HOME: /data/model_cache
+      # Explicitly forward API keys from .env so they are always present
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-local}
+      LLM_PROVIDER: ${LLM_PROVIDER:-auto}
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/data/chromadb
+      - upload_data:/data/uploads
+      - model_cache:/data/model_cache
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Infra
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      VECTOR_DB_PATH: /data/chromadb
+      UPLOAD_PATH: /data/uploads
+      ANONYMIZED_TELEMETRY: "false"
+      CHROMA_TELEMETRY: "false"
+      SENTENCE_TRANSFORMERS_HOME: /data/model_cache
+      # Explicitly forward API keys from .env
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-local}
+      LLM_PROVIDER: ${LLM_PROVIDER:-auto}
+    volumes:
+      - chromadb_data:/data/chromadb
+      - upload_data:/data/uploads
+      - model_cache:/data/model_cache
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  redis_data:
+  chromadb_data:
+  upload_data:
+  model_cache:

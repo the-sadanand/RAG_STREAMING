@@ -1,0 +1,29 @@
+# ── Frontend build context excludes ──────────────────────────────────────────
+
+.git/
+.gitignore
+
+.env
+.env.*
+
+# Dependencies are installed fresh in the builder stage
+node_modules/
+
+# Previous build output (rebuilt inside Docker)
+dist/
+build/
+
+# Dev tooling cache
+.vite/
+.eslintcache
+*.local
+
+# Test files
+**/*.test.*
+**/*.spec.*
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+*.log

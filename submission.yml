@@ -1,0 +1,37 @@
+# submission.yml — Automated evaluation manifest
+
+setup:
+  - command: "cp .env.example .env"
+    description: "Copy environment template (edit OPENAI_API_KEY before running)"
+  - command: "docker-compose build --no-cache"
+    description: "Build all service images"
+
+start:
+  - command: "docker-compose up --build -d"
+    description: "Start all services in detached mode (Redis, backend, worker, frontend)"
+
+health_check:
+  - command: "curl -f http://localhost:8000/health"
+    description: "Backend API health check"
+  - command: "curl -f http://localhost:3000"
+    description: "Frontend health check"
+
+test:
+  - command: "docker-compose exec backend pytest tests/ -v --tb=short"
+    description: "Run backend unit and integration tests"
+
+stop:
+  - command: "docker-compose down"
+    description: "Stop all services"
+
+teardown:
+  - command: "docker-compose down -v --remove-orphans"
+    description: "Stop all services and remove volumes"
+
+endpoints:
+  frontend:   "http://localhost:3000"
+  backend:    "http://localhost:8000"
+  health:     "http://localhost:8000/health"
+  websocket:  "ws://localhost:8000/query"
+  ingest:     "http://localhost:8000/ingest"
+  documents:  "http://localhost:8000/documents"
