@@ -64,10 +64,10 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full diagram and component descri
 ### 2. Clone & Configure
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/the-sadanand/RAG_STREAMING
 cd rag-streaming
 cp .env.example .env
-# Edit .env and set your OPENAI_API_KEY
+# Edit .env and set your LLM API_KEY 
 ```
 
 ### 3. Start All Services
@@ -253,15 +253,4 @@ cd backend && python ../worker/worker.py
 cd frontend && npm install && npm run dev
 # Visit http://localhost:5173
 ```
-
----
-
-## ⚠️ Common Issues
-
-**`OPENAI_API_KEY` not set**: Copy `.env.example` to `.env` and add your key.
-
-**Port conflicts**: If 3000 or 8000 are busy, change the port mappings in `docker-compose.yaml`.
-
-**Slow first query**: The first query triggers ChromaDB index loading. Subsequent queries are faster.
-
-**PDF text extraction fails**: Some PDFs are image-only. Use an OCR pre-processor before uploading.
+## Author : Sadanand Kr.
