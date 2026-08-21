@@ -1,0 +1,48 @@
+name: Chroma Compatibility
+
+on:
+  push:
+    branches: ["main", "ui/traversing-boundary-light"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  chroma-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Chroma dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Verify Chroma telemetry configuration
+        env:
+          ANONYMIZED_TELEMETRY: "false"
+          CHROMA_TELEMETRY: "false"
+        run: |
+          python - <<'PY'
+          import chromadb
+          from chromadb.config import Settings
+
+          settings = Settings(
+              anonymized_telemetry=False,
+              allow_reset=True,
+          )
+          client = chromadb.PersistentClient(
+              path="/tmp/chromadb-test",
+              settings=settings,
+          )
+          collection = client.get_or_create_collection("compatibility_test")
+          collection.add(ids=["1"], documents=["Chroma compatibility test"])
+          result = collection.get(ids=["1"])
+          assert result["ids"] == ["1"]
+          print("ChromaDB initialization and collection operations passed.")
+          PY
