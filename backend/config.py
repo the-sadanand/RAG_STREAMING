@@ -1,38 +1,42 @@
 from __future__ import annotations
+
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # ── Embeddings: LOCAL by default (no API key, no quota, already installed) ─
-    # Changing this to "gemini" or "openai" requires an API key in .env
-    embedding_provider: str = "local"
-    local_embedding_model: str = "all-MiniLM-L6-v2"  # 384 dims, ~90 MB
 
-    # ── LLM: Groq (free, no credit card) ─────────────────────────────────────
-    # Get free key at: https://console.groq.com  (takes 30 seconds)
+    # ── Embeddings ───────────────────────────────────────────────────────────
+    # Use Gemini in deployment so we don't load PyTorch/SentenceTransformers.
+    embedding_provider: str = "gemini"
+
+    # Kept for local development only.
+    local_embedding_model: str = "all-MiniLM-L6-v2"
+
+    # ── LLM: Groq ────────────────────────────────────────────────────────────
     groq_api_key: str = ""
-    groq_model: str = "llama-3.1-8b-instant"   # free, fast
+    groq_model: str = "llama-3.1-8b-instant"
 
-    # ── LLM: Gemini (free alternative) ───────────────────────────────────────
+    # ── LLM: Gemini ──────────────────────────────────────────────────────────
     gemini_api_key: str = ""
     gemini_llm_model: str = "gemini-1.5-flash"
-    gemini_embedding_model: str = "text-embedding-004"
 
-    # ── LLM: OpenAI (paid) ────────────────────────────────────────────────────
+    # Compatible with the current google.generativeai code
+    gemini_embedding_model: str = "gemini-embedding-001"
+
+    # ── LLM: OpenAI ──────────────────────────────────────────────────────────
     openai_api_key: str = ""
     llm_model: str = "gpt-4o-mini"
     embedding_model: str = "text-embedding-3-small"
 
-    # ── Provider selection ────────────────────────────────────────────────────
-    # llm_provider: "auto" | "groq" | "gemini" | "openai"
-    # auto → Groq if key set, else Gemini if key set, else OpenAI if key set, else fallback
+    # ── Provider selection ───────────────────────────────────────────────────
     llm_provider: str = "auto"
 
     # ── Redis ─────────────────────────────────────────────────────────────────
     redis_host: str = "redis"
     redis_port: int = 6379
     redis_db: int = 0
+
     ingestion_queue: str = "ingestion_queue"
     ingestion_status_channel: str = "ingestion_status"
 
@@ -50,7 +54,10 @@ class Settings(BaseSettings):
     top_k_results: int = 5
     max_file_size_mb: int = 20
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
 
 @lru_cache()
