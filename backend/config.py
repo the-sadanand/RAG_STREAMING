@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     gemini_llm_model: str = "gemini-1.5-flash"
 
     # Compatible with the current google.generativeai code
-    gemini_embedding_model: str = "gemini-embedding-001"
+    gemini_embedding_model: str = "models/gemini-embedding-001"
 
     # ── LLM: OpenAI ──────────────────────────────────────────────────────────
     openai_api_key: str = ""
