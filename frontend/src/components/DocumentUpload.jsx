@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-const API_BASE = import.meta.env.VITE_API_URL || ""  // empty = relative URL, routed through nginx
+const API_BASE = import.meta.env.VITE_API_URL || ""
 
 const STATUS_COLOR = {
-  queued:     '#f59e0b',
+  queued: '#f59e0b',
   processing: '#22d3ee',
-  completed:  '#10b981',
-  failed:     '#ef4444',
+  completed: '#10b981',
+  failed: '#ef4444',
 }
 
 const STATUS_LABEL = {
-  queued:     'Queued',
+  queued: 'Queued',
   processing: 'Processing…',
-  completed:  'Indexed ✓',
-  failed:     'Failed',
+  completed: 'Indexed ✓',
+  failed: 'Failed',
 }
 
 export default function DocumentUpload({ onDocumentIndexed }) {
@@ -23,10 +23,7 @@ export default function DocumentUpload({ onDocumentIndexed }) {
   const fileInput = useRef(null)
   const pollers = useRef({})
 
-  // Fetch ingested docs on mount
-  useEffect(() => {
-    fetchDocuments()
-  }, [])
+  useEffect(() => { fetchDocuments() }, [])
 
   const fetchDocuments = async () => {
     try {
@@ -45,9 +42,9 @@ export default function DocumentUpload({ onDocumentIndexed }) {
         const data = await res.json()
         const status = data.status
 
-        setUploads(prev =>
-          prev.map(u => u.docId === docId ? { ...u, status, chunks: data.chunks } : u)
-        )
+        setUploads(prev => prev.map(u =>
+          u.docId === docId ? { ...u, status, chunks: data.chunks } : u
+        ))
 
         if (status === 'completed' || status === 'failed') {
           clearInterval(interval)
@@ -81,29 +78,28 @@ export default function DocumentUpload({ onDocumentIndexed }) {
       const res = await fetch(`${API_BASE}/ingest`, { method: 'POST', body: form })
       if (!res.ok) {
         const err = await res.json()
-        setUploads(prev =>
-          prev.map(u => u.id === uploadEntry.id ? { ...u, status: 'failed', error: err.detail } : u)
-        )
+        setUploads(prev => prev.map(u =>
+          u.id === uploadEntry.id ? { ...u, status: 'failed', error: err.detail } : u
+        ))
         return
       }
+
       const data = await res.json()
-      setUploads(prev =>
-        prev.map(u => u.id === uploadEntry.id ? { ...u, status: 'queued', docId: data.doc_id } : u)
-      )
+      setUploads(prev => prev.map(u =>
+        u.id === uploadEntry.id ? { ...u, status: 'queued', docId: data.doc_id } : u
+      ))
       pollStatus(data.doc_id, file.name)
     } catch (err) {
-      setUploads(prev =>
-        prev.map(u => u.id === uploadEntry.id ? { ...u, status: 'failed', error: err.message } : u)
-      )
+      setUploads(prev => prev.map(u =>
+        u.id === uploadEntry.id ? { ...u, status: 'failed', error: err.message } : u
+      ))
     }
   }, [pollStatus])
 
   const handleFiles = useCallback((files) => {
     Array.from(files).forEach(file => {
       const ext = file.name.split('.').pop().toLowerCase()
-      if (['txt', 'pdf', 'md'].includes(ext)) {
-        uploadFile(file)
-      }
+      if (['txt', 'pdf', 'md'].includes(ext)) uploadFile(file)
     })
   }, [uploadFile])
 
@@ -122,12 +118,8 @@ export default function DocumentUpload({ onDocumentIndexed }) {
         <span style={styles.badge}>{ingested.length}</span>
       </div>
 
-      {/* Drop Zone */}
       <div
-        style={{
-          ...styles.dropZone,
-          ...(dragging ? styles.dropZoneActive : {}),
-        }}
+        style={{ ...styles.dropZone, ...(dragging ? styles.dropZoneActive : {}) }}
         onDragOver={e => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
@@ -151,13 +143,10 @@ export default function DocumentUpload({ onDocumentIndexed }) {
             <path d="M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
         </div>
-        <p style={styles.dropText}>
-          {dragging ? 'Drop to ingest' : 'Drop files or click'}
-        </p>
+        <p style={styles.dropText}>{dragging ? 'Drop to ingest' : 'Drop files or click'}</p>
         <p style={styles.dropSubtext}>.txt · .pdf · .md</p>
       </div>
 
-      {/* Upload queue */}
       {uploads.length > 0 && (
         <div style={styles.uploadList}>
           <p style={styles.listLabel}>Recent uploads</p>
@@ -166,27 +155,17 @@ export default function DocumentUpload({ onDocumentIndexed }) {
               <div style={styles.uploadMeta}>
                 <span style={styles.uploadName}>{u.filename}</span>
                 <span style={{ ...styles.uploadStatus, color: STATUS_COLOR[u.status] || '#94a3b8' }}>
-                  {u.status === 'uploading' ? (
-                    <span style={styles.spinner} />
-                  ) : null}
+                  {u.status === 'uploading' && <span style={styles.spinner} />}
                   {STATUS_LABEL[u.status] || u.status}
                   {u.chunks ? ` · ${u.chunks} chunks` : ''}
-                {u.status === 'failed' && u.error && (
-                  <span style={{ display: 'block', fontSize: '10px', color: '#ef4444', marginTop: '2px', wordBreak: 'break-word' }}>
-                    {u.error}
-                  </span>
-                )}
+                  {u.status === 'failed' && u.error && (
+                    <span style={styles.errorText}>{u.error}</span>
+                  )}
                 </span>
               </div>
               {(u.status === 'queued' || u.status === 'processing') && (
                 <div style={styles.progressTrack}>
-                  <div
-                    style={{
-                      ...styles.progressBar,
-                      animation: 'progress-bar 8s ease-out forwards',
-                      background: `linear-gradient(90deg, var(--cyan-dim), var(--cyan))`,
-                    }}
-                  />
+                  <div style={{ ...styles.progressBar, width: u.status === 'processing' ? '65%' : '25%' }} />
                 </div>
               )}
             </div>
@@ -194,7 +173,6 @@ export default function DocumentUpload({ onDocumentIndexed }) {
         </div>
       )}
 
-      {/* Ingested documents */}
       {ingested.length > 0 && (
         <div style={styles.ingestedList}>
           <p style={styles.listLabel}>Knowledge base</p>
@@ -212,175 +190,35 @@ export default function DocumentUpload({ onDocumentIndexed }) {
       )}
 
       {ingested.length === 0 && uploads.length === 0 && (
-        <p style={styles.emptyState}>
-          No documents yet. Upload some files to populate the knowledge base.
-        </p>
+        <p style={styles.emptyState}>No documents yet. Upload some files to populate the knowledge base.</p>
       )}
     </div>
   )
 }
 
 const styles = {
-  panel: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-    height: '100%',
-    overflowY: 'auto',
-    paddingRight: '4px',
-  },
-  sectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  sectionTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '13px',
-    fontWeight: 600,
-    color: 'var(--text-secondary)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-  },
-  badge: {
-    background: 'var(--bg-elevated)',
-    border: '1px solid var(--border)',
-    borderRadius: '10px',
-    padding: '0 6px',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--text-muted)',
-  },
-  dropZone: {
-    border: '1.5px dashed var(--border)',
-    borderRadius: 'var(--radius-lg)',
-    padding: '24px 16px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    background: 'var(--bg-surface)',
-    color: 'var(--text-muted)',
-  },
-  dropZoneActive: {
-    borderColor: 'var(--cyan)',
-    background: 'var(--cyan-glow)',
-    color: 'var(--cyan)',
-  },
-  dropIcon: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '10px',
-    background: 'var(--bg-elevated)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'inherit',
-  },
-  dropText: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '13px',
-    fontWeight: 500,
-    color: 'inherit',
-  },
-  dropSubtext: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
-    color: 'var(--text-muted)',
-  },
+  panel: { display: 'flex', flexDirection: 'column', gap: '16px', height: '100%', overflowY: 'auto', paddingRight: '4px' },
+  sectionHeader: { display: 'flex', alignItems: 'center', gap: '8px' },
+  sectionTitle: { fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' },
+  badge: { background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '10px', padding: '0 6px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)' },
+  dropZone: { border: '1.5px dashed var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: 'border-color 0.15s ease, background-color 0.15s ease', background: 'var(--bg-surface)', color: 'var(--text-muted)' },
+  dropZoneActive: { borderColor: 'var(--cyan)', background: 'var(--cyan-glow)', color: 'var(--cyan)' },
+  dropIcon: { width: '40px', height: '40px', borderRadius: '10px', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'inherit' },
+  dropText: { fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 500, color: 'inherit' },
+  dropSubtext: { fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)' },
   uploadList: { display: 'flex', flexDirection: 'column', gap: '8px' },
   ingestedList: { display: 'flex', flexDirection: 'column', gap: '6px' },
-  listLabel: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '11px',
-    fontWeight: 600,
-    color: 'var(--text-muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    marginBottom: '4px',
-  },
-  uploadItem: {
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-    padding: '10px 12px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-  },
-  uploadMeta: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: '8px',
-  },
-  uploadName: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
-    color: 'var(--text-primary)',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '130px',
-  },
-  uploadStatus: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    whiteSpace: 'nowrap',
-  },
-  spinner: {
-    display: 'inline-block',
-    width: '8px',
-    height: '8px',
-    border: '1.5px solid currentColor',
-    borderTopColor: 'transparent',
-    borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite',
-  },
-  progressTrack: {
-    height: '2px',
-    background: 'var(--border)',
-    borderRadius: '1px',
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: '1px',
-    width: '0%',
-  },
-  ingestedItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '7px 10px',
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-  },
-  ingestedName: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
-    color: 'var(--text-secondary)',
-    flex: 1,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  chunkCount: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--text-muted)',
-    flexShrink: 0,
-  },
-  emptyState: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '12px',
-    color: 'var(--text-muted)',
-    lineHeight: 1.6,
-  },
+  listLabel: { fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' },
+  uploadItem: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '6px' },
+  uploadMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' },
+  uploadName: { fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '130px' },
+  uploadStatus: { fontFamily: 'var(--font-mono)', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' },
+  errorText: { display: 'block', fontSize: '10px', color: '#ef4444', marginTop: '2px', wordBreak: 'break-word' },
+  spinner: { display: 'inline-block', width: '8px', height: '8px', border: '1.5px solid currentColor', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+  progressTrack: { height: '2px', background: 'var(--border)', borderRadius: '1px', overflow: 'hidden' },
+  progressBar: { height: '100%', borderRadius: '1px', background: 'linear-gradient(90deg, var(--cyan-dim), var(--cyan))' },
+  ingestedItem: { display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 10px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' },
+  ingestedName: { fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-secondary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  chunkCount: { fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)', flexShrink: 0 },
+  emptyState: { fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.6 },
 }
