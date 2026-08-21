@@ -5,6 +5,9 @@ import ResponseDisplay from './components/ResponseDisplay'
 import StatusBar from './components/StatusBar'
 import { useWebSocket } from './hooks/useWebSocket'
 
+const DEFAULT_SIDEBAR_WIDTH = 280
+const DEFAULT_CONTENT_GAP = 20
+
 export default function App() {
   const [tokens, setTokens] = useState([])
   const [citations, setCitations] = useState([])
@@ -14,6 +17,8 @@ export default function App() {
   const [hasQueried, setHasQueried] = useState(false)
   const [queryHistory, setQueryHistory] = useState([])
   const [activeQuery, setActiveQuery] = useState('')
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH)
+  const [contentGap, setContentGap] = useState(DEFAULT_CONTENT_GAP)
 
   const handleToken = useCallback((t) => setTokens(prev => [...prev, t]), [])
   const handleCitation = useCallback((c) => setCitations(prev => {
@@ -52,12 +57,25 @@ export default function App() {
     sendQuery(query)
   }, [sendQuery])
 
+  const resetLayout = () => {
+    setSidebarWidth(DEFAULT_SIDEBAR_WIDTH)
+    setContentGap(DEFAULT_CONTENT_GAP)
+  }
+
   return (
-    <div style={styles.app}>
+    <div
+      style={{
+        ...styles.app,
+        '--content-gap': `${contentGap}px`,
+      }}
+    >
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
 
       <div className="app-main" style={styles.main}>
-        <aside className="app-sidebar ui-section documents-shell" style={styles.sidebar}>
+        <aside
+          className="app-sidebar ui-section documents-shell"
+          style={{ ...styles.sidebar, width: `${sidebarWidth}px` }}
+        >
           <DocumentUpload onDocumentIndexed={(name) => {
             console.info(`Document "${name}" is now searchable`)
           }} />
@@ -80,9 +98,63 @@ export default function App() {
               ))}
             </div>
           )}
+
+          <div className="layout-controls" style={styles.layoutControls}>
+            <div style={styles.layoutHeader}>
+              <span style={styles.layoutTitle}>Layout</span>
+              <button type="button" onClick={resetLayout} style={styles.resetButton}>
+                Reset
+              </button>
+            </div>
+
+            <div style={styles.controlGroup}>
+              <div style={styles.controlRow}>
+                <label style={styles.sliderLabel} htmlFor="sidebar-width">Sidebar</label>
+                <span style={styles.layoutValue}>{sidebarWidth}px</span>
+              </div>
+              <input
+                id="sidebar-width"
+                type="range"
+                min="220"
+                max="380"
+                step="10"
+                value={sidebarWidth}
+                onChange={e => setSidebarWidth(Number(e.target.value))}
+                style={styles.slider}
+                aria-label="Sidebar width"
+              />
+            </div>
+
+            <div style={styles.controlGroup}>
+              <div style={styles.controlRow}>
+                <label style={styles.sliderLabel} htmlFor="content-spacing">Spacing</label>
+                <span style={styles.layoutValue}>{contentGap}px</span>
+              </div>
+              <input
+                id="content-spacing"
+                type="range"
+                min="10"
+                max="32"
+                step="2"
+                value={contentGap}
+                onChange={e => setContentGap(Number(e.target.value))}
+                style={styles.slider}
+                aria-label="Section spacing"
+              />
+            </div>
+
+            <div style={styles.sliderScale}>
+              <span>Compact</span>
+              <span>Comfortable</span>
+              <span>Roomy</span>
+            </div>
+          </div>
         </aside>
 
-        <main className="app-content" style={styles.content}>
+        <main
+          className="app-content"
+          style={{ ...styles.content, gap: 'var(--content-gap)' }}
+        >
           {activeQuery && (
             <div className="ui-section active-query" style={styles.activeQuery}>
               <span style={styles.queryIcon}>?</span>
@@ -130,7 +202,6 @@ const styles = {
     minHeight: 0,
   },
   sidebar: {
-    width: '260px',
     flexShrink: 0,
     borderRight: '1px solid var(--border)',
     background: 'var(--bg-surface)',
@@ -155,14 +226,76 @@ const styles = {
     fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4,
     overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
   },
+  layoutControls: {
+    marginTop: 'auto',
+    padding: '12px',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius)',
+  },
+  layoutHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '14px',
+  },
+  layoutTitle: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '11px',
+    fontWeight: 600,
+    color: 'var(--text-secondary)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+  },
+  controlGroup: { marginBottom: '12px' },
+  controlRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '6px',
+  },
+  sliderLabel: {
+    fontFamily: 'var(--font-body)',
+    fontSize: '11px',
+    color: 'var(--text-muted)',
+  },
+  layoutValue: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    color: 'var(--cyan)',
+  },
+  slider: {
+    width: '100%',
+    height: '4px',
+    accentColor: 'var(--cyan)',
+    cursor: 'pointer',
+  },
+  sliderScale: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '8px',
+    color: 'var(--text-muted)',
+  },
+  resetButton: {
+    border: '1px solid var(--border)',
+    background: 'transparent',
+    color: 'var(--text-secondary)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '9px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    padding: '4px 7px',
+  },
   content: {
-    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px', gap: '20px',
+    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px',
     minWidth: 0, minHeight: 0,
   },
   activeQuery: {
     display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 18px',
     background: 'var(--bg-card)', border: '1px solid var(--border)', borderLeft: '3px solid var(--cyan)',
-    borderRadius: 'var(--radius-lg)', animation: 'fade-in 0.2s ease', flexShrink: 0,
+    borderRadius: 'var(--radius-lg)', flexShrink: 0,
   },
   queryIcon: {
     width: '22px', height: '22px', borderRadius: '50%', background: 'var(--cyan-glow)',
