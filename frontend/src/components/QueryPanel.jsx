@@ -49,8 +49,8 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
                 e.preventDefault()
                 selectSuggestion(s)
               }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-bright)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-bright)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
             >
               <span style={styles.suggestionArrow}>→</span>
               <span style={styles.suggestionText}>{s}</span>
@@ -63,7 +63,7 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
         style={{
           ...styles.inputRow,
           borderColor: query.length > 0 ? 'var(--border-bright)' : 'var(--border)',
-          boxShadow: query.length > 0 ? '0 0 0 1px rgba(34,211,238,0.1)' : 'none',
+          boxShadow: query.length > 0 ? '0 0 0 1px rgba(34,211,238,0.08)' : 'none',
         }}
       >
         <textarea
@@ -136,7 +136,6 @@ const styles = {
     gap: '4px',
     boxShadow: '0 -8px 32px rgba(0,0,0,0.4)',
     zIndex: 10,
-    animation: 'slide-in-up 0.15s ease',
   },
   suggestionsLabel: {
     fontFamily: 'var(--font-display)',
@@ -157,7 +156,7 @@ const styles = {
     borderRadius: 'var(--radius)',
     cursor: 'pointer',
     textAlign: 'left',
-    transition: 'border-color 0.15s',
+    transition: 'border-color 0.15s ease, background-color 0.15s ease',
   },
   suggestionArrow: {
     fontFamily: 'var(--font-mono)',
@@ -179,7 +178,7 @@ const styles = {
     border: '1.5px solid',
     borderRadius: 'var(--radius-lg)',
     padding: '12px 14px',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
+    transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
     alignItems: 'flex-end',
   },
   textarea: {
@@ -203,7 +202,6 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    transition: 'all 0.2s',
   },
   btnSpinner: {
     width: '14px',
