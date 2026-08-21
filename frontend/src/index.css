@@ -70,6 +70,91 @@ textarea { -webkit-appearance: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
+/* ── Traversing boundary light ────────────────────────────────────────────── */
+@keyframes boundary-traverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* A quiet cyan trace continuously travels around each major panel. */
+.ui-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.ui-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    rgba(34, 211, 238, 0.10) 275deg,
+    rgba(34, 211, 238, 0.95) 292deg,
+    rgba(255, 255, 255, 0.92) 300deg,
+    rgba(34, 211, 238, 0.18) 310deg,
+    transparent 330deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 5;
+  animation: boundary-traverse 7s linear infinite;
+  opacity: 0.8;
+}
+
+.ui-section::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 282deg,
+    rgba(34, 211, 238, 0.16) 296deg,
+    transparent 316deg,
+    transparent 360deg
+  );
+  filter: blur(7px);
+  pointer-events: none;
+  z-index: -1;
+  animation: boundary-traverse 7s linear infinite;
+  opacity: 0.65;
+}
+
+/* Keep the permanent structural boundary visible beneath the moving light. */
+.header-shell,
+.documents-shell,
+.response-shell,
+.query-shell,
+.active-query {
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-glow);
+}
+
+.header-shell { border-top: 1px solid var(--border); }
+.documents-shell { border-radius: var(--radius-lg); }
+.response-shell { border-radius: var(--radius-lg); }
+.query-shell { border-radius: var(--radius-lg); padding: 1px; }
+.active-query { overflow: hidden; }
+
+/* Prevent the animated layer from interfering with controls and scrolling. */
+.header-shell > *,
+.documents-shell > *,
+.response-shell > *,
+.query-shell > *,
+.active-query > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Reading-focused desktop layout ───────────────────────────────────────── */
 .app-main { min-width: 0; }
 .app-sidebar { min-width: 0; }
