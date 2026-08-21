@@ -5,6 +5,9 @@ import ResponseDisplay from './components/ResponseDisplay'
 import StatusBar from './components/StatusBar'
 import { useWebSocket } from './hooks/useWebSocket'
 
+const DEFAULT_SIDEBAR_WIDTH = 280
+const DEFAULT_CONTENT_GAP = 20
+
 export default function App() {
   const [tokens, setTokens] = useState([])
   const [citations, setCitations] = useState([])
@@ -14,7 +17,8 @@ export default function App() {
   const [hasQueried, setHasQueried] = useState(false)
   const [queryHistory, setQueryHistory] = useState([])
   const [activeQuery, setActiveQuery] = useState('')
-  const [sidebarWidth, setSidebarWidth] = useState(280)
+  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH)
+  const [contentGap, setContentGap] = useState(DEFAULT_CONTENT_GAP)
 
   const handleToken = useCallback((t) => setTokens(prev => [...prev, t]), [])
   const handleCitation = useCallback((c) => setCitations(prev => {
@@ -53,8 +57,18 @@ export default function App() {
     sendQuery(query)
   }, [sendQuery])
 
+  const resetLayout = () => {
+    setSidebarWidth(DEFAULT_SIDEBAR_WIDTH)
+    setContentGap(DEFAULT_CONTENT_GAP)
+  }
+
   return (
-    <div style={styles.app}>
+    <div
+      style={{
+        ...styles.app,
+        '--content-gap': `${contentGap}px`,
+      }}
+    >
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
 
       <div className="app-main" style={styles.main}>
@@ -88,37 +102,59 @@ export default function App() {
           <div className="layout-controls" style={styles.layoutControls}>
             <div style={styles.layoutHeader}>
               <span style={styles.layoutTitle}>Layout</span>
-              <span style={styles.layoutValue}>{sidebarWidth}px</span>
-            </div>
-            <label style={styles.sliderLabel} htmlFor="sidebar-width">
-              Sidebar width
-            </label>
-            <input
-              id="sidebar-width"
-              type="range"
-              min="220"
-              max="380"
-              step="10"
-              value={sidebarWidth}
-              onChange={e => setSidebarWidth(Number(e.target.value))}
-              style={styles.slider}
-              aria-label="Sidebar width"
-            />
-            <div style={styles.sliderScale}>
-              <span>Compact</span>
-              <button
-                type="button"
-                onClick={() => setSidebarWidth(280)}
-                style={styles.resetButton}
-              >
+              <button type="button" onClick={resetLayout} style={styles.resetButton}>
                 Reset
               </button>
-              <span>Wide</span>
+            </div>
+
+            <div style={styles.controlGroup}>
+              <div style={styles.controlRow}>
+                <label style={styles.sliderLabel} htmlFor="sidebar-width">Sidebar</label>
+                <span style={styles.layoutValue}>{sidebarWidth}px</span>
+              </div>
+              <input
+                id="sidebar-width"
+                type="range"
+                min="220"
+                max="380"
+                step="10"
+                value={sidebarWidth}
+                onChange={e => setSidebarWidth(Number(e.target.value))}
+                style={styles.slider}
+                aria-label="Sidebar width"
+              />
+            </div>
+
+            <div style={styles.controlGroup}>
+              <div style={styles.controlRow}>
+                <label style={styles.sliderLabel} htmlFor="content-spacing">Spacing</label>
+                <span style={styles.layoutValue}>{contentGap}px</span>
+              </div>
+              <input
+                id="content-spacing"
+                type="range"
+                min="10"
+                max="32"
+                step="2"
+                value={contentGap}
+                onChange={e => setContentGap(Number(e.target.value))}
+                style={styles.slider}
+                aria-label="Section spacing"
+              />
+            </div>
+
+            <div style={styles.sliderScale}>
+              <span>Compact</span>
+              <span>Comfortable</span>
+              <span>Roomy</span>
             </div>
           </div>
         </aside>
 
-        <main className="app-content" style={styles.content}>
+        <main
+          className="app-content"
+          style={{ ...styles.content, gap: 'var(--content-gap)' }}
+        >
           {activeQuery && (
             <div className="ui-section active-query" style={styles.activeQuery}>
               <span style={styles.queryIcon}>?</span>
@@ -177,7 +213,7 @@ const styles = {
   },
   historySection: { display: 'flex', flexDirection: 'column', gap: '6px' },
   historyLabel: {
-    fontFamily: 'var(--font-display'), fontSize: '11px', fontWeight: 600,
+    fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600,
     color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px',
   },
   historyItem: {
@@ -201,7 +237,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '10px',
+    marginBottom: '14px',
   },
   layoutTitle: {
     fontFamily: 'var(--font-display)',
@@ -211,17 +247,22 @@ const styles = {
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
   },
+  controlGroup: { marginBottom: '12px' },
+  controlRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '6px',
+  },
+  sliderLabel: {
+    fontFamily: 'var(--font-body)',
+    fontSize: '11px',
+    color: 'var(--text-muted)',
+  },
   layoutValue: {
     fontFamily: 'var(--font-mono)',
     fontSize: '10px',
     color: 'var(--cyan)',
-  },
-  sliderLabel: {
-    display: 'block',
-    fontFamily: 'var(--font-body)',
-    fontSize: '11px',
-    color: 'var(--text-muted)',
-    marginBottom: '7px',
   },
   slider: {
     width: '100%',
@@ -233,22 +274,22 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: '6px',
     fontFamily: 'var(--font-mono)',
-    fontSize: '9px',
+    fontSize: '8px',
     color: 'var(--text-muted)',
   },
   resetButton: {
-    border: 'none',
+    border: '1px solid var(--border)',
     background: 'transparent',
-    color: 'var(--cyan)',
+    color: 'var(--text-secondary)',
     fontFamily: 'var(--font-mono)',
     fontSize: '9px',
+    borderRadius: '5px',
     cursor: 'pointer',
-    padding: '2px 4px',
+    padding: '4px 7px',
   },
   content: {
-    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px', gap: '20px',
+    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px',
     minWidth: 0, minHeight: 0,
   },
   activeQuery: {
