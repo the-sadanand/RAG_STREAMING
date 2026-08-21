@@ -19,7 +19,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first — Docker caches this layer until requirements.txt changes
-COPY requirements.txt .
+COPY backend/requirements.txt .
 
 # 1. Install torch CPU-only (saves ~600 MB vs default CUDA build)
 # 2. Install remaining packages
@@ -34,8 +34,8 @@ SentenceTransformer('all-MiniLM-L6-v2', cache_folder='/data/model_cache')" \
     || true
 
 # Copy application source (tests and docs excluded via .dockerignore)
-COPY . .
-
+COPY backend/ /app/
+COPY worker/worker.py /app/worker.py
 # Create runtime data directories
 RUN mkdir -p /data/chromadb /data/uploads /data/model_cache
 
@@ -48,4 +48,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1 --loop uvloop --http httptools"]
+CMD ["sh", "-c", "python -u /app/worker.py & exec uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1"]
