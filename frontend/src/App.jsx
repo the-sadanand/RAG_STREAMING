@@ -14,6 +14,7 @@ export default function App() {
   const [hasQueried, setHasQueried] = useState(false)
   const [queryHistory, setQueryHistory] = useState([])
   const [activeQuery, setActiveQuery] = useState('')
+  const [sidebarWidth, setSidebarWidth] = useState(280)
 
   const handleToken = useCallback((t) => setTokens(prev => [...prev, t]), [])
   const handleCitation = useCallback((c) => setCitations(prev => {
@@ -57,7 +58,10 @@ export default function App() {
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
 
       <div className="app-main" style={styles.main}>
-        <aside className="app-sidebar ui-section documents-shell" style={styles.sidebar}>
+        <aside
+          className="app-sidebar ui-section documents-shell"
+          style={{ ...styles.sidebar, width: `${sidebarWidth}px` }}
+        >
           <DocumentUpload onDocumentIndexed={(name) => {
             console.info(`Document "${name}" is now searchable`)
           }} />
@@ -80,6 +84,38 @@ export default function App() {
               ))}
             </div>
           )}
+
+          <div className="layout-controls" style={styles.layoutControls}>
+            <div style={styles.layoutHeader}>
+              <span style={styles.layoutTitle}>Layout</span>
+              <span style={styles.layoutValue}>{sidebarWidth}px</span>
+            </div>
+            <label style={styles.sliderLabel} htmlFor="sidebar-width">
+              Sidebar width
+            </label>
+            <input
+              id="sidebar-width"
+              type="range"
+              min="220"
+              max="380"
+              step="10"
+              value={sidebarWidth}
+              onChange={e => setSidebarWidth(Number(e.target.value))}
+              style={styles.slider}
+              aria-label="Sidebar width"
+            />
+            <div style={styles.sliderScale}>
+              <span>Compact</span>
+              <button
+                type="button"
+                onClick={() => setSidebarWidth(280)}
+                style={styles.resetButton}
+              >
+                Reset
+              </button>
+              <span>Wide</span>
+            </div>
+          </div>
         </aside>
 
         <main className="app-content" style={styles.content}>
@@ -130,7 +166,6 @@ const styles = {
     minHeight: 0,
   },
   sidebar: {
-    width: '260px',
     flexShrink: 0,
     borderRight: '1px solid var(--border)',
     background: 'var(--bg-surface)',
@@ -142,7 +177,7 @@ const styles = {
   },
   historySection: { display: 'flex', flexDirection: 'column', gap: '6px' },
   historyLabel: {
-    fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600,
+    fontFamily: 'var(--font-display'), fontSize: '11px', fontWeight: 600,
     color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px',
   },
   historyItem: {
@@ -155,6 +190,63 @@ const styles = {
     fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4,
     overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
   },
+  layoutControls: {
+    marginTop: 'auto',
+    padding: '12px',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius)',
+  },
+  layoutHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '10px',
+  },
+  layoutTitle: {
+    fontFamily: 'var(--font-display)',
+    fontSize: '11px',
+    fontWeight: 600,
+    color: 'var(--text-secondary)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+  },
+  layoutValue: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    color: 'var(--cyan)',
+  },
+  sliderLabel: {
+    display: 'block',
+    fontFamily: 'var(--font-body)',
+    fontSize: '11px',
+    color: 'var(--text-muted)',
+    marginBottom: '7px',
+  },
+  slider: {
+    width: '100%',
+    height: '4px',
+    accentColor: 'var(--cyan)',
+    cursor: 'pointer',
+  },
+  sliderScale: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '6px',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '9px',
+    color: 'var(--text-muted)',
+  },
+  resetButton: {
+    border: 'none',
+    background: 'transparent',
+    color: 'var(--cyan)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '9px',
+    cursor: 'pointer',
+    padding: '2px 4px',
+  },
   content: {
     flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px', gap: '20px',
     minWidth: 0, minHeight: 0,
@@ -162,7 +254,7 @@ const styles = {
   activeQuery: {
     display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 18px',
     background: 'var(--bg-card)', border: '1px solid var(--border)', borderLeft: '3px solid var(--cyan)',
-    borderRadius: 'var(--radius-lg)', animation: 'fade-in 0.2s ease', flexShrink: 0,
+    borderRadius: 'var(--radius-lg)', flexShrink: 0,
   },
   queryIcon: {
     width: '22px', height: '22px', borderRadius: '50%', background: 'var(--cyan-glow)',
