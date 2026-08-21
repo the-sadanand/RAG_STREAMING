@@ -4,6 +4,9 @@ websockets==13.1
 python-multipart==0.0.12
 redis[asyncio]==5.2.0
 chromadb==0.5.20
+# Chroma 0.5.x expects the older PostHog capture API.
+# Keep PostHog below 6 to prevent telemetry TypeError noise.
+posthog>=2.4.0,<6.0.0
 # LLM providers
 groq==0.11.0
 google-generativeai==0.8.3
