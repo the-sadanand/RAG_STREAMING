@@ -1,14 +1,14 @@
 import { ConnectionState } from '../hooks/useWebSocket'
 
 const STATUS_CONFIG = {
-  [ConnectionState.CONNECTED]:    { label: 'Connected',    color: '#10b981', pulse: true  },
-  [ConnectionState.CONNECTING]:   { label: 'Connecting…',  color: '#f59e0b', pulse: true  },
-  [ConnectionState.DISCONNECTED]: { label: 'Disconnected', color: '#ef4444', pulse: false },
-  [ConnectionState.ERROR]:        { label: 'Error',        color: '#ef4444', pulse: false },
+  [ConnectionState.CONNECTED]:    { label: 'Connected',    color: '#10b981' },
+  [ConnectionState.CONNECTING]:   { label: 'Connecting…',  color: '#f59e0b' },
+  [ConnectionState.DISCONNECTED]: { label: 'Disconnected', color: '#ef4444' },
+  [ConnectionState.ERROR]:        { label: 'Error',        color: '#ef4444' },
 }
 
 export default function StatusBar({ connectionState, ttft, isStreaming }) {
-  const { label, color, pulse } = STATUS_CONFIG[connectionState] ?? STATUS_CONFIG[ConnectionState.DISCONNECTED]
+  const { label, color } = STATUS_CONFIG[connectionState] ?? STATUS_CONFIG[ConnectionState.DISCONNECTED]
 
   return (
     <div className="ui-section header-shell" style={styles.bar}>
@@ -38,14 +38,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
         )}
 
         <div style={styles.connection}>
-          <span
-            style={{
-              ...styles.dot,
-              backgroundColor: color,
-              boxShadow: pulse ? `0 0 8px ${color}` : 'none',
-              animation: pulse ? 'pulse-glow 2s infinite' : 'none',
-            }}
-          />
+          <span style={{ ...styles.dot, backgroundColor: color }} />
           <span style={{ ...styles.connLabel, color }}>{label}</span>
         </div>
       </div>
@@ -58,6 +51,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: '16px',
     padding: '0 24px',
     minHeight: '58px',
     borderBottom: '1px solid var(--border)',
@@ -76,7 +70,6 @@ const styles = {
     lineHeight: 1,
     fontWeight: 400,
     color: 'var(--cyan)',
-    textShadow: '0 0 16px rgba(34,211,238,0.16)',
     flexShrink: 0,
   },
   brandText: {
@@ -102,7 +95,7 @@ const styles = {
   metrics: {
     display: 'flex',
     alignItems: 'center',
-    gap: '20px',
+    gap: '14px',
     flexShrink: 0,
   },
   metric: {
@@ -126,12 +119,12 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    padding: '3px 10px',
+    padding: '4px 9px',
     background: 'rgba(34, 211, 238, 0.08)',
     border: '1px solid rgba(34, 211, 238, 0.2)',
     borderRadius: '20px',
     fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
+    fontSize: '10px',
     color: 'var(--cyan)',
   },
   streamingDot: {
@@ -139,7 +132,6 @@ const styles = {
     height: '6px',
     borderRadius: '50%',
     backgroundColor: 'var(--cyan)',
-    animation: 'pulse-glow 1s infinite',
     display: 'inline-block',
   },
   connection: {
@@ -159,3 +151,5 @@ const styles = {
     fontWeight: 500,
   },
 }
+
+/* Keep the header compact on phones without hiding connection state. */
