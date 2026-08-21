@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 function CitationCard({ citation, index }) {
   return (
-    <div style={{ ...styles.citationCard, animation: 'slide-in-up 0.25s ease forwards' }}>
+    <div style={styles.citationCard}>
       <div style={styles.citationHeader}>
         <div style={styles.citationBadge}>{index + 1}</div>
         <div style={styles.citationMeta}>
@@ -21,15 +21,11 @@ function CitationCard({ citation, index }) {
 
 function SkeletonLoader() {
   return (
-    <div style={styles.skeleton}>
+    <div style={styles.skeleton} aria-label="Preparing response">
       {[100, 85, 92, 70].map((w, i) => (
         <div
           key={i}
-          style={{
-            ...styles.skeletonLine,
-            width: `${w}%`,
-            animationDelay: `${i * 0.1}s`,
-          }}
+          style={{ ...styles.skeletonLine, width: `${w}%` }}
         />
       ))}
     </div>
@@ -40,7 +36,6 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
   const bottomRef = useRef(null)
   const containerRef = useRef(null)
 
-  // Auto-scroll to bottom during streaming
   useEffect(() => {
     if (isStreaming && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
@@ -61,7 +56,7 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
         </div>
         <p style={styles.emptyTitle}>Ask anything</p>
         <p style={styles.emptySubtitle}>
-          Type a question below. Responses will stream token-by-token with source citations.
+          Ask a question about your uploaded documents. Answers include source citations.
         </p>
       </div>
     )
@@ -69,7 +64,6 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
 
   return (
     <div style={styles.wrapper}>
-      {/* Status message */}
       {statusMessage && isStreaming && (
         <div style={styles.statusMsg}>
           <span style={styles.statusDot} />
@@ -77,18 +71,16 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
         </div>
       )}
 
-      {/* Error */}
       {error && (
-        <div style={styles.errorBox}>
+        <div style={styles.errorBox} role="alert">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="#ef4444" strokeWidth="1.5"/>
             <path d="M12 8v4m0 4h.01" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
-          {error}
+          <span>{error}</span>
         </div>
       )}
 
-      {/* Citations */}
       {citations.length > 0 && (
         <div style={styles.citationsSection}>
           <p style={styles.citationsLabel}>
@@ -105,7 +97,6 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
         </div>
       )}
 
-      {/* Response text */}
       {(fullText || isStreaming) && (
         <div style={styles.responseSection}>
           <p style={styles.responseLabel}>Response</p>
@@ -126,7 +117,6 @@ export default function ResponseDisplay({ tokens, citations, statusMessage, isSt
   )
 }
 
-/** Minimal Markdown-like renderer for bold, code, and line breaks */
 function FormattedText({ text }) {
   const lines = text.split('\n')
   return (
@@ -142,7 +132,6 @@ function FormattedText({ text }) {
 }
 
 function InlineFormatted({ text }) {
-  // Split on **bold** and `code`
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g)
   return (
     <>
@@ -179,7 +168,6 @@ const styles = {
     fontFamily: 'var(--font-mono)',
     fontSize: '11px',
     color: 'var(--cyan)',
-    animation: 'fade-in 0.2s ease',
   },
   statusDot: {
     width: '6px',
@@ -187,12 +175,11 @@ const styles = {
     borderRadius: '50%',
     background: 'var(--cyan)',
     display: 'inline-block',
-    animation: 'pulse-glow 1.5s infinite',
     flexShrink: 0,
   },
   errorBox: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: '8px',
     padding: '10px 14px',
     background: 'var(--red-dim)',
@@ -200,157 +187,64 @@ const styles = {
     borderRadius: 'var(--radius)',
     fontFamily: 'var(--font-mono)',
     fontSize: '12px',
+    lineHeight: 1.5,
     color: 'var(--red)',
+    overflowWrap: 'anywhere',
   },
   citationsSection: { display: 'flex', flexDirection: 'column', gap: '10px' },
   citationsLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    fontFamily: 'var(--font-display)',
-    fontSize: '11px',
-    fontWeight: 600,
-    color: 'var(--amber)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
+    display: 'flex', alignItems: 'center', gap: '6px',
+    fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600,
+    color: 'var(--amber)', textTransform: 'uppercase', letterSpacing: '0.08em',
   },
   citationsGrid: { display: 'flex', flexDirection: 'column', gap: '8px' },
   citationCard: {
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderLeft: '3px solid var(--amber)',
-    borderRadius: 'var(--radius)',
-    padding: '10px 14px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
+    background: 'var(--bg-card)', border: '1px solid var(--border)', borderLeft: '3px solid var(--amber)',
+    borderRadius: 'var(--radius)', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '6px',
   },
-  citationHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
+  citationHeader: { display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 },
   citationBadge: {
-    width: '20px',
-    height: '20px',
-    borderRadius: '50%',
-    background: 'var(--amber-dim)',
-    border: '1px solid var(--amber)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    fontWeight: 600,
-    color: 'var(--amber)',
-    flexShrink: 0,
+    width: '20px', height: '20px', borderRadius: '50%', background: 'var(--amber-dim)', border: '1px solid var(--amber)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)',
+    fontSize: '10px', fontWeight: 600, color: 'var(--amber)', flexShrink: 0,
   },
-  citationMeta: { display: 'flex', flexDirection: 'column', gap: '2px' },
-  citationSource: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '12px',
-    color: 'var(--text-primary)',
-    fontWeight: 500,
-  },
-  citationDetail: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--text-muted)',
-  },
+  citationMeta: { display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 },
+  citationSource: { fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-primary)', fontWeight: 500, overflowWrap: 'anywhere' },
+  citationDetail: { fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)' },
   citationPreview: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '12px',
-    color: 'var(--text-secondary)',
-    lineHeight: 1.6,
-    fontStyle: 'italic',
-    paddingLeft: '30px',
-    borderLeft: '1px solid var(--border)',
-    marginLeft: '10px',
+    fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6,
+    fontStyle: 'italic', paddingLeft: '30px', borderLeft: '1px solid var(--border)', marginLeft: '10px', overflowWrap: 'anywhere',
   },
-  responseSection: { display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 },
+  responseSection: { display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, minWidth: 0 },
   responseLabel: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '11px',
-    fontWeight: 600,
-    color: 'var(--text-muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
+    fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)',
+    textTransform: 'uppercase', letterSpacing: '0.08em',
   },
   responseBody: {
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-lg)',
-    padding: '20px',
-    minHeight: '80px',
+    background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)',
+    padding: '20px', minHeight: '80px', overflowWrap: 'anywhere',
   },
-  responseText: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '14px',
-    lineHeight: 1.75,
-    color: 'var(--text-primary)',
-  },
+  responseText: { fontFamily: 'var(--font-body)', fontSize: '14px', lineHeight: 1.75, color: 'var(--text-primary)' },
   inlineCode: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '12px',
-    background: 'var(--bg-elevated)',
-    border: '1px solid var(--border)',
-    borderRadius: '4px',
-    padding: '1px 5px',
-    color: 'var(--cyan)',
+    fontFamily: 'var(--font-mono)', fontSize: '12px', background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+    borderRadius: '4px', padding: '1px 5px', color: 'var(--cyan)',
   },
   cursor: {
-    display: 'inline-block',
-    width: '2px',
-    height: '14px',
-    background: 'var(--cyan)',
-    marginLeft: '2px',
-    verticalAlign: 'text-bottom',
-    animation: 'blink-cursor 1s step-end infinite',
+    display: 'inline-block', width: '2px', height: '14px', background: 'var(--cyan)',
+    marginLeft: '2px', verticalAlign: 'text-bottom',
   },
-  skeleton: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    padding: '4px 0',
-  },
-  skeletonLine: {
-    height: '14px',
-    borderRadius: '4px',
-    background: 'linear-gradient(90deg, var(--bg-elevated) 25%, var(--border) 50%, var(--bg-elevated) 75%)',
-    backgroundSize: '200% 100%',
-    animation: 'shimmer 1.5s infinite',
-  },
+  skeleton: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 0' },
+  skeletonLine: { height: '14px', borderRadius: '4px', background: 'var(--bg-elevated)', opacity: 0.8 },
   emptyState: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '12px',
-    padding: '40px',
-    textAlign: 'center',
+    flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+    gap: '12px', padding: '40px', textAlign: 'center',
   },
   emptyIcon: {
-    width: '64px',
-    height: '64px',
-    borderRadius: '50%',
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '64px', height: '64px', borderRadius: '50%', background: 'var(--bg-card)', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  emptyTitle: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '18px',
-    fontWeight: 700,
-    color: 'var(--text-primary)',
-  },
+  emptyTitle: { fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' },
   emptySubtitle: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    maxWidth: '300px',
-    lineHeight: 1.6,
+    fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', maxWidth: '360px', lineHeight: 1.6,
   },
 }
