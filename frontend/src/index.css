@@ -6,6 +6,7 @@
   --bg-card:       #0F1821;
   --border:        #263541;
   --border-bright: #3A5263;
+  --section-border:#314A5A;
 
   --cyan:          #22D3EE;
   --cyan-dim:      #0E7490;
@@ -64,7 +65,7 @@ textarea { -webkit-appearance: none; }
   overflow: hidden;
 }
 
-/* ── Animations ────────────────────────────────────────────────────────────── */
+/* ── Functional animations only ────────────────────────────────────────────── */
 @keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 6px rgba(34, 211, 238, 0.22); } 50% { box-shadow: 0 0 12px rgba(34, 211, 238, 0.38); } }
 @keyframes slide-in-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -73,162 +74,46 @@ textarea { -webkit-appearance: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-/*
- * ── Traversing boundary light ─────────────────────────────────────────────
- *
- * Every major UI section gets:
- *   1. A permanent visible cyan outline.
- *   2. A sharp cyan/white beam that travels around the COMPLETE perimeter.
- *   3. A soft glow travelling with the beam.
- *
- * The conic-gradient is masked to the border, so the light never fills the
- * panel. This keeps the interface readable while still giving it that flashy
- * AI-console feel.
- */
-@keyframes boundary-traverse {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes boundary-traverse-reverse {
-  from { transform: rotate(360deg); }
-  to   { transform: rotate(0deg); }
-}
-
+/* ── Clear section boundaries ──────────────────────────────────────────────── */
 .ui-section {
   position: relative;
-  isolation: isolate;
-  --beam-speed: 8s;
-  --beam-opacity: 1;
-  border: 1px solid rgba(91, 123, 141, 0.48) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(34, 211, 238, 0.025),
-    0 0 22px rgba(34, 211, 238, 0.035);
+  border: 1px solid var(--section-border) !important;
+  box-shadow: none;
 }
 
-/* The bright travelling edge. */
-.ui-section::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  padding: 2px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 238deg,
-    rgba(34, 211, 238, 0.05) 252deg,
-    rgba(34, 211, 238, 0.55) 270deg,
-    rgba(34, 211, 238, 1) 286deg,
-    rgba(255, 255, 255, 1) 294deg,
-    rgba(34, 211, 238, 1) 302deg,
-    rgba(34, 211, 238, 0.45) 318deg,
-    rgba(34, 211, 238, 0.06) 334deg,
-    transparent 348deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 20;
-  opacity: var(--beam-opacity);
-  animation: boundary-traverse var(--beam-speed) linear infinite;
-}
-
-/* The soft halo follows the same path, slightly behind the sharp beam. */
-.ui-section::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  padding: 4px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 258deg,
-    rgba(34, 211, 238, 0.12) 276deg,
-    rgba(34, 211, 238, 0.48) 294deg,
-    rgba(34, 211, 238, 0.10) 316deg,
-    transparent 336deg,
-    transparent 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  filter: blur(5px);
-  pointer-events: none;
-  z-index: -1;
-  animation: boundary-traverse-reverse var(--beam-speed) linear infinite;
-  opacity: 0.95;
-}
-
-/* Give each major section its own rhythm so the lights don't move in sync. */
-.header-shell     { --beam-speed: 11s; }
-.documents-shell  { --beam-speed: 8s; }
-.active-query     { --beam-speed: 6s; }
-.response-shell   { --beam-speed: 9s; }
-.query-shell      { --beam-speed: 7s; }
-
-/* Structural boundaries stay visible even when the animated beam is elsewhere. */
 .header-shell,
 .documents-shell,
 .response-shell,
 .query-shell,
 .active-query {
-  border-color: rgba(91, 123, 141, 0.48) !important;
+  border-color: var(--section-border) !important;
 }
 
 .header-shell {
-  border-top-color: rgba(34, 211, 238, 0.24) !important;
+  border-bottom-color: #365464 !important;
 }
 
 .documents-shell,
 .response-shell,
 .query-shell,
 .active-query {
-  box-shadow:
-    inset 0 0 0 1px rgba(34, 211, 238, 0.025),
-    0 0 24px rgba(34, 211, 238, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.025);
 }
 
 .documents-shell { border-radius: var(--radius-lg); }
 .response-shell  { border-radius: var(--radius-lg); }
-.query-shell     { border-radius: var(--radius-lg); padding: 1px; }
+.query-shell     { border-radius: var(--radius-lg); }
 .active-query    { overflow: hidden; }
 
-/* Keep animated layers above backgrounds but below actual controls/content. */
-.header-shell > *,
-.documents-shell > *,
-.response-shell > *,
-.query-shell > *,
-.active-query > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Extra hover energy on interactive major panels. */
+/* A restrained hover state makes interactive sections easier to identify. */
 .documents-shell:hover,
 .response-shell:hover,
 .query-shell:focus-within,
 .active-query:hover {
-  border-color: rgba(34, 211, 238, 0.42) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(34, 211, 238, 0.035),
-    0 0 28px rgba(34, 211, 238, 0.07);
+  border-color: #416276 !important;
 }
 
-/* ── Reading-focused desktop layout ───────────────────────────────────────── */
+/* ── Layout helpers ────────────────────────────────────────────────────────── */
 .app-main { min-width: 0; }
 .app-sidebar { min-width: 0; }
 .app-content { min-width: 0; }
@@ -276,6 +161,7 @@ textarea { -webkit-appearance: none; }
 
   .app-content .response-body { max-width: 100%; }
   .query-hint { display: none !important; }
+  .layout-controls { display: none !important; }
 }
 
 /* ── Mobile ────────────────────────────────────────────────────────────────── */
@@ -311,12 +197,4 @@ textarea { -webkit-appearance: none; }
 /* ── Touch-friendly controls ──────────────────────────────────────────────── */
 @media (pointer: coarse) {
   button { min-height: 40px; }
-}
-
-/* Respect reduced-motion accessibility preferences. */
-@media (prefers-reduced-motion: reduce) {
-  .ui-section::before,
-  .ui-section::after {
-    animation: none;
-  }
 }
