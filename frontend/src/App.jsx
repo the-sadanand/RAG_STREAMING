@@ -71,8 +71,6 @@ export default function App() {
                   style={styles.historyItem}
                   onClick={() => submitQuery(q)}
                   title={q}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-bright)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
                 >
                   <span style={styles.historyIcon}>↺</span>
                   <span style={styles.historyText}>{q}</span>
@@ -118,7 +116,8 @@ const styles = {
   app: {
     display: 'flex',
     flexDirection: 'column',
-    height: '100vh',
+    height: '100dvh',
+    minHeight: '100vh',
     background: 'var(--bg-base)',
     overflow: 'hidden',
   },
@@ -146,9 +145,10 @@ const styles = {
     color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px',
   },
   historyItem: {
-    display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '7px 10px',
+    display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '8px 10px',
     background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-    cursor: 'pointer', textAlign: 'left', transition: 'border-color 0.15s',
+    cursor: 'pointer', textAlign: 'left', transition: 'border-color 0.15s ease, background-color 0.15s ease',
+    color: 'inherit',
   },
   historyIcon: { fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--cyan)', flexShrink: 0 },
   historyText: {
@@ -162,7 +162,7 @@ const styles = {
   activeQuery: {
     display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 18px',
     background: 'var(--bg-card)', border: '1px solid var(--border)', borderLeft: '3px solid var(--cyan)',
-    borderRadius: 'var(--radius-lg)', animation: 'fade-in 0.2s ease', flexShrink: 0,
+    borderRadius: 'var(--radius-lg)', flexShrink: 0,
   },
   queryIcon: {
     width: '22px', height: '22px', borderRadius: '50%', background: 'var(--cyan-glow)',
