@@ -20,7 +20,6 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
           <path d="M2 12l10 5 10-5" stroke="#a855f7" strokeWidth="1.5" strokeLinejoin="round" opacity="0.6"/>
         </svg>
         <span style={styles.title}>RAG Intelligence</span>
-        <span style={styles.version}>v1.0</span>
       </div>
 
       {/* Metrics */}
@@ -80,15 +79,6 @@ const styles = {
     fontWeight: 700,
     color: 'var(--text-primary)',
     letterSpacing: '-0.01em',
-  },
-  version: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--text-muted)',
-    background: 'var(--bg-elevated)',
-    border: '1px solid var(--border)',
-    borderRadius: '4px',
-    padding: '1px 5px',
   },
   metrics: {
     display: 'flex',
