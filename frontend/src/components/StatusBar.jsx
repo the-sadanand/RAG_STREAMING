@@ -12,17 +12,17 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
 
   return (
     <div className="ui-section header-shell" style={styles.bar}>
-      <div style={styles.brand}>
-        <span style={styles.infinity} aria-hidden="true">∞</span>
-        <div style={styles.brandText}>
-          <span style={styles.title}>RAG Intelligence</span>
-          <span style={styles.subtitle}>Retrieval · Reasoning · Context</span>
+      <div className="brand" style={styles.brand}>
+        <span className="infinity" style={styles.infinity} aria-hidden="true">∞</span>
+        <div className="brandText" style={styles.brandText}>
+          <span className="title" style={styles.title}>RAG Intelligence</span>
+          <span className="subtitle" style={styles.subtitle}>Retrieval · Reasoning · Context</span>
         </div>
       </div>
 
-      <div style={styles.metrics}>
+      <div className="metrics" style={styles.metrics}>
         {ttft !== null && (
-          <div style={styles.metric}>
+          <div className="metric" style={styles.metric}>
             <span style={styles.metricLabel}>TTFT</span>
             <span style={{ ...styles.metricValue, color: ttft < 500 ? '#10b981' : '#f59e0b' }}>
               {ttft}ms
@@ -31,7 +31,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
         )}
 
         {isStreaming && (
-          <div style={styles.streamingBadge}>
+          <div className="streamingBadge" style={styles.streamingBadge}>
             <span style={styles.streamingDot} />
             Streaming
           </div>
@@ -39,7 +39,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
 
         <div style={styles.connection}>
           <span style={{ ...styles.dot, backgroundColor: color }} />
-          <span style={{ ...styles.connLabel, color }}>{label}</span>
+          <span className="connLabel" style={{ ...styles.connLabel, color }}>{label}</span>
         </div>
       </div>
     </div>
@@ -48,108 +48,22 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
 
 const styles = {
   bar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '16px',
-    padding: '0 24px',
-    minHeight: '58px',
-    borderBottom: '1px solid var(--border)',
-    background: 'var(--bg-surface)',
-    flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
+    padding: '0 24px', minHeight: '58px', borderBottom: '1px solid var(--border)',
+    background: 'var(--bg-surface)', flexShrink: 0,
   },
-  brand: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '11px',
-    minWidth: 0,
-  },
-  infinity: {
-    fontFamily: 'Georgia, serif',
-    fontSize: '30px',
-    lineHeight: 1,
-    fontWeight: 400,
-    color: 'var(--cyan)',
-    flexShrink: 0,
-  },
-  brandText: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1px',
-    minWidth: 0,
-  },
-  title: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '16px',
-    fontWeight: 700,
-    color: 'var(--text-primary)',
-    letterSpacing: '-0.01em',
-  },
-  subtitle: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '8px',
-    color: 'var(--text-muted)',
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase',
-  },
-  metrics: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '14px',
-    flexShrink: 0,
-  },
-  metric: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  metricLabel: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--text-muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-  },
-  metricValue: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '12px',
-    fontWeight: 500,
-  },
-  streamingBadge: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '4px 9px',
-    background: 'rgba(34, 211, 238, 0.08)',
-    border: '1px solid rgba(34, 211, 238, 0.2)',
-    borderRadius: '20px',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '10px',
-    color: 'var(--cyan)',
-  },
-  streamingDot: {
-    width: '6px',
-    height: '6px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--cyan)',
-    display: 'inline-block',
-  },
-  connection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '7px',
-  },
-  dot: {
-    width: '7px',
-    height: '7px',
-    borderRadius: '50%',
-    display: 'inline-block',
-  },
-  connLabel: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
-    fontWeight: 500,
-  },
+  brand: { display: 'flex', alignItems: 'center', gap: '11px', minWidth: 0 },
+  infinity: { fontFamily: 'Georgia, serif', fontSize: '30px', lineHeight: 1, fontWeight: 400, color: 'var(--cyan)', flexShrink: 0 },
+  brandText: { display: 'flex', flexDirection: 'column', gap: '1px', minWidth: 0 },
+  title: { fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' },
+  subtitle: { fontFamily: 'var(--font-mono)', fontSize: '8px', color: 'var(--text-muted)', letterSpacing: '0.06em', textTransform: 'uppercase' },
+  metrics: { display: 'flex', alignItems: 'center', gap: '14px', flexShrink: 0 },
+  metric: { display: 'flex', alignItems: 'center', gap: '6px' },
+  metricLabel: { fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' },
+  metricValue: { fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 500 },
+  streamingBadge: { display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 9px', background: 'rgba(34, 211, 238, 0.08)', border: '1px solid rgba(34, 211, 238, 0.2)', borderRadius: '20px', fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--cyan)' },
+  streamingDot: { width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--cyan)', display: 'inline-block' },
+  connection: { display: 'flex', alignItems: 'center', gap: '7px' },
+  dot: { width: '7px', height: '7px', borderRadius: '50%', display: 'inline-block' },
+  connLabel: { fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 500 },
 }
-
-/* Keep the header compact on phones without hiding connection state. */
