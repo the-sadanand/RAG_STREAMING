@@ -31,17 +31,8 @@
 }
 
 /* ── Reset ──────────────────────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body, #root {
-  height: 100%;
-  width: 100%;
-}
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; }
 body {
   font-family: var(--font-body);
   background: var(--bg-base);
@@ -53,52 +44,91 @@ body {
 /* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: var(--border-bright);
-  border-radius: 3px;
-}
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
 
-/* ── Utility ────────────────────────────────────────────────────────────────── */
-.visually-hidden {
-  position: absolute;
-  width: 1px; height: 1px;
-  clip: rect(0 0 0 0);
-  overflow: hidden;
-}
+.visually-hidden { position: absolute; width: 1px; height: 1px; clip: rect(0 0 0 0); overflow: hidden; }
 
 /* ── Animations ─────────────────────────────────────────────────────────────── */
-@keyframes blink-cursor {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+@keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 8px rgba(34, 211, 238, 0.3); } 50% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.6); } }
+@keyframes slide-in-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes progress-bar { 0% { width: 0%; } 80% { width: 90%; } 100% { width: 100%; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+/* ── Responsive layout ──────────────────────────────────────────────────────── */
+.app-main { min-width: 0; }
+.app-sidebar { min-width: 0; }
+.app-content { min-width: 0; }
+
+@media (max-width: 900px) {
+  body { overflow: auto; }
+
+  .app-main {
+    flex-direction: column !important;
+    overflow: auto !important;
+    height: auto !important;
+  }
+
+  .app-sidebar {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    padding: 14px !important;
+    max-height: 38vh;
+    overflow-y: auto !important;
+  }
+
+  .app-content {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    overflow: visible !important;
+    padding: 14px !important;
+    gap: 14px !important;
+    min-height: 60vh !important;
+  }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(34, 211, 238, 0.3); }
-  50%       { box-shadow: 0 0 20px rgba(34, 211, 238, 0.6); }
+@media (max-width: 600px) {
+  .app-sidebar { max-height: 34vh; padding: 12px !important; }
+  .app-content { padding: 10px !important; gap: 10px !important; min-height: 66vh !important; }
+
+  .app-content .active-query {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .app-content .active-query p {
+    font-size: 13px !important;
+  }
+
+  .app-content textarea {
+    font-size: 16px !important;
+    min-height: 42px !important;
+  }
+
+  .app-content .response-body,
+  .app-content [style*="background: var(--bg-card)"] {
+    max-width: 100%;
+  }
+
+  .app-sidebar .uploadMeta {
+    align-items: flex-start;
+  }
+
+  .app-sidebar .uploadStatus {
+    white-space: normal !important;
+    text-align: right;
+  }
 }
 
-@keyframes slide-in-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+@media (max-width: 420px) {
+  .app-sidebar { max-height: 32vh; padding: 10px !important; }
+  .app-content { padding: 8px !important; gap: 8px !important; }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes progress-bar {
-  0%   { width: 0%; }
-  80%  { width: 90%; }
-  100% { width: 100%; }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  .app-content .active-query { padding: 8px 10px !important; }
+  .app-content .active-query p { font-size: 12px !important; }
 }
