@@ -12,17 +12,14 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
 
   return (
     <div style={styles.bar}>
-      {/* Brand */}
       <div style={styles.brand}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#22d3ee" strokeWidth="1.5" strokeLinejoin="round"/>
-          <path d="M2 17l10 5 10-5" stroke="#22d3ee" strokeWidth="1.5" strokeLinejoin="round"/>
-          <path d="M2 12l10 5 10-5" stroke="#a855f7" strokeWidth="1.5" strokeLinejoin="round" opacity="0.6"/>
-        </svg>
-        <span style={styles.title}>RAG Intelligence</span>
+        <span style={styles.infinity} aria-hidden="true">∞</span>
+        <div style={styles.brandText}>
+          <span style={styles.title}>RAG Intelligence</span>
+          <span style={styles.subtitle}>Retrieval · Reasoning · Context</span>
+        </div>
       </div>
 
-      {/* Metrics */}
       <div style={styles.metrics}>
         {ttft !== null && (
           <div style={styles.metric}>
@@ -40,7 +37,6 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
           </div>
         )}
 
-        {/* Connection */}
         <div style={styles.connection}>
           <span
             style={{
@@ -63,7 +59,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0 24px',
-    height: '52px',
+    minHeight: '58px',
     borderBottom: '1px solid var(--border)',
     background: 'var(--bg-surface)',
     flexShrink: 0,
@@ -71,7 +67,23 @@ const styles = {
   brand: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '11px',
+    minWidth: 0,
+  },
+  infinity: {
+    fontFamily: 'Georgia, serif',
+    fontSize: '30px',
+    lineHeight: 1,
+    fontWeight: 400,
+    color: 'var(--cyan)',
+    textShadow: '0 0 16px rgba(34,211,238,0.16)',
+    flexShrink: 0,
+  },
+  brandText: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1px',
+    minWidth: 0,
   },
   title: {
     fontFamily: 'var(--font-display)',
@@ -80,10 +92,18 @@ const styles = {
     color: 'var(--text-primary)',
     letterSpacing: '-0.01em',
   },
+  subtitle: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '8px',
+    color: 'var(--text-muted)',
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+  },
   metrics: {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
+    flexShrink: 0,
   },
   metric: {
     display: 'flex',
@@ -128,8 +148,8 @@ const styles = {
     gap: '7px',
   },
   dot: {
-    width: '8px',
-    height: '8px',
+    width: '7px',
+    height: '7px',
     borderRadius: '50%',
     display: 'inline-block',
   },
