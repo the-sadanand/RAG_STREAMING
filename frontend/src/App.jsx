@@ -57,7 +57,7 @@ export default function App() {
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
 
       <div className="app-main" style={styles.main}>
-        <aside className="app-sidebar" style={styles.sidebar}>
+        <aside className="app-sidebar ui-section documents-shell" style={styles.sidebar}>
           <DocumentUpload onDocumentIndexed={(name) => {
             console.info(`Document "${name}" is now searchable`)
           }} />
@@ -84,13 +84,13 @@ export default function App() {
 
         <main className="app-content" style={styles.content}>
           {activeQuery && (
-            <div style={styles.activeQuery}>
+            <div className="ui-section active-query" style={styles.activeQuery}>
               <span style={styles.queryIcon}>?</span>
               <p style={styles.queryText}>{activeQuery}</p>
             </div>
           )}
 
-          <div style={styles.responseWrapper}>
+          <div className="response-shell ui-section" style={styles.responseWrapper}>
             <ResponseDisplay
               tokens={tokens}
               citations={citations}
@@ -101,7 +101,7 @@ export default function App() {
             />
           </div>
 
-          <div style={styles.inputArea}>
+          <div className="query-shell ui-section" style={styles.inputArea}>
             <QueryPanel
               onSubmit={submitQuery}
               isStreaming={isStreaming}
