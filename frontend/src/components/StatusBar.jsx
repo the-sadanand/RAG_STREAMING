@@ -11,7 +11,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
   const { label, color, pulse } = STATUS_CONFIG[connectionState] ?? STATUS_CONFIG[ConnectionState.DISCONNECTED]
 
   return (
-    <div style={styles.bar}>
+    <div className="ui-section header-shell" style={styles.bar}>
       <div style={styles.brand}>
         <span style={styles.infinity} aria-hidden="true">∞</span>
         <div style={styles.brandText}>
