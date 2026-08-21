@@ -15,33 +15,32 @@ export default function App() {
   const [queryHistory, setQueryHistory] = useState([])
   const [activeQuery, setActiveQuery] = useState('')
 
-  const handleToken   = useCallback((t) => setTokens(prev => [...prev, t]), [])
+  const handleToken = useCallback((t) => setTokens(prev => [...prev, t]), [])
   const handleCitation = useCallback((c) => setCitations(prev => {
     const key = `${c.source}-${c.chunk_index}`
     if (prev.some(p => `${p.source}-${p.chunk_index}` === key)) return prev
     return [...prev, c]
   }), [])
-  const handleStatus  = useCallback((s) => setStatusMessage(s), [])
-  const handleDone    = useCallback(() => {
+  const handleStatus = useCallback((s) => setStatusMessage(s), [])
+  const handleDone = useCallback(() => {
     setIsStreaming(false)
     setStatusMessage('')
   }, [])
-  const handleError   = useCallback((e) => {
+  const handleError = useCallback((e) => {
     setError(e)
     setIsStreaming(false)
     setStatusMessage('')
   }, [])
 
   const { connectionState, sendQuery, ttft } = useWebSocket({
-    onToken:    handleToken,
+    onToken: handleToken,
     onCitation: handleCitation,
-    onStatus:   handleStatus,
-    onDone:     handleDone,
-    onError:    handleError,
+    onStatus: handleStatus,
+    onDone: handleDone,
+    onError: handleError,
   })
 
   const submitQuery = useCallback((query) => {
-    // Clear previous response
     setTokens([])
     setCitations([])
     setError(null)
@@ -50,26 +49,16 @@ export default function App() {
     setHasQueried(true)
     setActiveQuery(query)
     setQueryHistory(prev => [query, ...prev].slice(0, 10))
-
     sendQuery(query)
   }, [sendQuery])
 
   return (
     <div style={styles.app}>
-      {/* ── Header ──────────────────────────────────────────────── */}
-      <StatusBar
-        connectionState={connectionState}
-        ttft={ttft}
-        isStreaming={isStreaming}
-      />
+      <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
 
-      {/* ── Main layout ─────────────────────────────────────────── */}
-      <div style={styles.main}>
-
-        {/* ── Sidebar ───────────────────────────────────────── */}
-        <aside style={styles.sidebar}>
+      <div className="app-main" style={styles.main}>
+        <aside className="app-sidebar" style={styles.sidebar}>
           <DocumentUpload onDocumentIndexed={(name) => {
-            // Could show a toast; for now just log
             console.info(`Document "${name}" is now searchable`)
           }} />
 
@@ -93,9 +82,7 @@ export default function App() {
           )}
         </aside>
 
-        {/* ── Response area ─────────────────────────────────── */}
-        <main style={styles.content}>
-          {/* Active query display */}
+        <main className="app-content" style={styles.content}>
           {activeQuery && (
             <div style={styles.activeQuery}>
               <span style={styles.queryIcon}>?</span>
@@ -103,7 +90,6 @@ export default function App() {
             </div>
           )}
 
-          {/* Streaming response */}
           <div style={styles.responseWrapper}>
             <ResponseDisplay
               tokens={tokens}
@@ -115,7 +101,6 @@ export default function App() {
             />
           </div>
 
-          {/* Query input */}
           <div style={styles.inputArea}>
             <QueryPanel
               onSubmit={submitQuery}
@@ -142,6 +127,7 @@ const styles = {
     flex: 1,
     overflow: 'hidden',
     gap: 0,
+    minHeight: 0,
   },
   sidebar: {
     width: '260px',
@@ -154,97 +140,41 @@ const styles = {
     flexDirection: 'column',
     gap: '24px',
   },
-  historySection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-  },
+  historySection: { display: 'flex', flexDirection: 'column', gap: '6px' },
   historyLabel: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '11px',
-    fontWeight: 600,
-    color: 'var(--text-muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    marginBottom: '4px',
+    fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 600,
+    color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px',
   },
   historyItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '7px',
-    padding: '7px 10px',
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-    cursor: 'pointer',
-    textAlign: 'left',
-    transition: 'border-color 0.15s',
+    display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '7px 10px',
+    background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
+    cursor: 'pointer', textAlign: 'left', transition: 'border-color 0.15s',
   },
-  historyIcon: {
-    fontFamily: 'var(--font-mono)',
-    fontSize: '11px',
-    color: 'var(--cyan)',
-    flexShrink: 0,
-  },
+  historyIcon: { fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--cyan)', flexShrink: 0 },
   historyText: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '11px',
-    color: 'var(--text-secondary)',
-    lineHeight: 1.4,
-    overflow: 'hidden',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
+    fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4,
+    overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
   },
   content: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    padding: '24px',
-    gap: '20px',
+    flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px', gap: '20px',
+    minWidth: 0, minHeight: 0,
   },
   activeQuery: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '12px',
-    padding: '14px 18px',
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    borderLeft: '3px solid var(--cyan)',
-    borderRadius: 'var(--radius-lg)',
-    animation: 'fade-in 0.2s ease',
-    flexShrink: 0,
+    display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '14px 18px',
+    background: 'var(--bg-card)', border: '1px solid var(--border)', borderLeft: '3px solid var(--cyan)',
+    borderRadius: 'var(--radius-lg)', animation: 'fade-in 0.2s ease', flexShrink: 0,
   },
   queryIcon: {
-    width: '22px',
-    height: '22px',
-    borderRadius: '50%',
-    background: 'var(--cyan-glow)',
-    border: '1px solid rgba(34,211,238,0.3)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'var(--font-display)',
-    fontSize: '13px',
-    fontWeight: 700,
-    color: 'var(--cyan)',
-    flexShrink: 0,
+    width: '22px', height: '22px', borderRadius: '50%', background: 'var(--cyan-glow)',
+    border: '1px solid rgba(34,211,238,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, color: 'var(--cyan)', flexShrink: 0,
   },
   queryText: {
-    fontFamily: 'var(--font-body)',
-    fontSize: '14px',
-    color: 'var(--text-primary)',
-    lineHeight: 1.5,
-    fontWeight: 500,
+    fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--text-primary)', lineHeight: 1.5,
+    fontWeight: 500, overflowWrap: 'anywhere',
   },
   responseWrapper: {
-    flex: 1,
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
+    flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0,
   },
-  inputArea: {
-    flexShrink: 0,
-  },
+  inputArea: { flexShrink: 0, minWidth: 0 },
 }
