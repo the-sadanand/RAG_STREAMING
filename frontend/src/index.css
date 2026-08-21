@@ -90,6 +90,8 @@ body {
     gap: 14px !important;
     min-height: 60vh !important;
   }
+
+  .query-hint { display: none !important; }
 }
 
 @media (max-width: 600px) {
