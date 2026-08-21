@@ -38,7 +38,6 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
 
   return (
     <div style={styles.wrapper}>
-      {/* Suggestions */}
       {showSuggestions && query.length === 0 && (
         <div style={styles.suggestions}>
           <p style={styles.suggestionsLabel}>Try asking</p>
@@ -46,11 +45,8 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
             <button
               key={i}
               style={styles.suggestion}
-              // onMouseDown fires BEFORE the textarea's onBlur, so the suggestion
-              // list is still visible when the click registers. onClick fires after
-              // onBlur, which hides the list first — that's the bug.
               onMouseDown={e => {
-                e.preventDefault()          // prevent textarea losing focus at all
+                e.preventDefault()
                 selectSuggestion(s)
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-bright)'}
@@ -63,7 +59,6 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
         </div>
       )}
 
-      {/* Input area */}
       <div
         style={{
           ...styles.inputRow,
@@ -81,11 +76,7 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
           onKeyDown={handleKeyDown}
-          placeholder={
-            isConnected
-              ? 'Ask a question… (Enter to send, Shift+Enter for newline)'
-              : 'Waiting for connection…'
-          }
+          placeholder={isConnected ? 'Ask a question…' : 'Waiting for connection…'}
           disabled={!isConnected || isStreaming}
           rows={2}
           style={{
@@ -117,10 +108,8 @@ export default function QueryPanel({ onSubmit, isStreaming, connectionState }) {
         </button>
       </div>
 
-      <p style={styles.hint}>
-        {isStreaming
-          ? 'Streaming response… please wait'
-          : 'Enter to send · Shift+Enter for newline'}
+      <p className="query-hint" style={styles.hint}>
+        {isStreaming ? 'Streaming response… please wait' : 'Enter to send · Shift+Enter for newline'}
       </p>
     </div>
   )
