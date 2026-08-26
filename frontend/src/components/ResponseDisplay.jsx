@@ -83,11 +83,11 @@ function InfinityBackdrop() {
         <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="36" opacity="0.28" filter="url(#bdBlurMD)" />
         <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="36" opacity="0.26" filter="url(#bdBlurMD)" />
 
-        {/* ── Medium glow halo ──────────────────────────────────────── */
+        {/* ── Medium glow halo ──────────────────────────────────────── */}
         <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="14" opacity="0.38" filter="url(#bdBlurSM)" />
         <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="14" opacity="0.34" filter="url(#bdBlurSM)" />
 
-        {/* ── Outer offset strands ──────────────────────────────────── */
+        {/* ── Outer offset strands ──────────────────────────────────── */}
         <path d={pathLo} fill="none" stroke="url(#bdLeft)"  strokeWidth="10" opacity="0.22" filter="url(#bdBlurSM)" />
         <path d={pathRo} fill="none" stroke="url(#bdRight)" strokeWidth="10" opacity="0.20" filter="url(#bdBlurSM)" />
 
