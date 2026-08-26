@@ -14,7 +14,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming, pulseKey
   return (
     <div className="ui-section header-shell" style={styles.bar}>
       <div className="brand" style={styles.brand}>
-        <span key={pulseKey} className="infinity" style={styles.infinity} aria-hidden="true">∞</span>
+        <span key={pulseKey} className={`infinity ${pulseKey > 0 ? 'logo-pulse' : ''}`} style={styles.infinity} aria-hidden="true">∞</span>
         <div className="brandText" style={styles.brandText}>
           <span className="title" style={styles.title}>RAG Intelligence</span>
           <span className="subtitle" style={styles.subtitle}>Retrieval · Reasoning · Context</span>
@@ -43,7 +43,8 @@ export default function StatusBar({ connectionState, ttft, isStreaming, pulseKey
           <span className="connLabel" style={{ ...styles.connLabel, color }}>{label}</span>
         </div>
       </div>
-      <EnergyBorder phase={-6.5} />
+      {/* Header is phase 0% of the shared 24s energy cycle. */}
+      <EnergyBorder phase={0} />
     </div>
   )
 }
