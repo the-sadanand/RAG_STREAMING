@@ -1,4 +1,5 @@
 import { ConnectionState } from '../hooks/useWebSocket'
+import EnergyBorder from './EnergyBorder'
 
 const STATUS_CONFIG = {
   [ConnectionState.CONNECTED]:    { label: 'Connected',    color: '#10b981' },
@@ -7,13 +8,13 @@ const STATUS_CONFIG = {
   [ConnectionState.ERROR]:        { label: 'Error',        color: '#ef4444' },
 }
 
-export default function StatusBar({ connectionState, ttft, isStreaming }) {
+export default function StatusBar({ connectionState, ttft, isStreaming, pulseKey = 0 }) {
   const { label, color } = STATUS_CONFIG[connectionState] ?? STATUS_CONFIG[ConnectionState.DISCONNECTED]
 
   return (
     <div className="ui-section header-shell" style={styles.bar}>
       <div className="brand" style={styles.brand}>
-        <span className="infinity" style={styles.infinity} aria-hidden="true">∞</span>
+        <span key={pulseKey} className="infinity" style={styles.infinity} aria-hidden="true">∞</span>
         <div className="brandText" style={styles.brandText}>
           <span className="title" style={styles.title}>RAG Intelligence</span>
           <span className="subtitle" style={styles.subtitle}>Retrieval · Reasoning · Context</span>
@@ -42,6 +43,7 @@ export default function StatusBar({ connectionState, ttft, isStreaming }) {
           <span className="connLabel" style={{ ...styles.connLabel, color }}>{label}</span>
         </div>
       </div>
+      <EnergyBorder phase={-6.5} />
     </div>
   )
 }
@@ -50,7 +52,7 @@ const styles = {
   bar: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
     padding: '0 24px', minHeight: '58px', borderBottom: '1px solid var(--border)',
-    background: 'var(--bg-surface)', flexShrink: 0,
+    background: 'rgba(13, 20, 28, 0.94)', flexShrink: 0,
   },
   brand: { display: 'flex', alignItems: 'center', gap: '11px', minWidth: 0 },
   infinity: { fontFamily: 'Georgia, serif', fontSize: '30px', lineHeight: 1, fontWeight: 400, color: 'var(--cyan)', flexShrink: 0 },
