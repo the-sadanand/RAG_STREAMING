@@ -1,6 +1,6 @@
 export default function InfinityAmbient() {
-  // Lemniscate path: M 40 260 C 165 35, 335 35, 500 260 C 665 485, 835 485, 960 260 C 835 35, 665 35, 500 260 C 335 485, 165 485, 40 260
-  const path = "M 40 260 C 165 35, 335 35, 500 260 C 665 485, 835 485, 960 260 C 835 35, 665 35, 500 260 C 335 485, 165 485, 40 260"
+  // Mirrored acute-waist infinity path.
+  const path = "M 40 260 C 165 35, 345 35, 500 260 C 655 485, 835 485, 960 260 C 835 35, 655 35, 500 260 C 345 485, 165 485, 40 260"
 
   return (
     <div className="infinity-ambient" aria-hidden="true">
