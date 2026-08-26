@@ -53,7 +53,55 @@ textarea { -webkit-appearance: none; }
 .app-content .response-body { width: 100%; max-width: 820px; margin: 0 auto; }
 .app-content p, .app-sidebar span, .app-sidebar p { overflow-wrap: anywhere; }
 
-/* Only functional loading motion remains. */
+/* Clear static accents: visual hierarchy without motion. */
+.response-shell::after,
+.query-shell::after,
+.documents-shell::after,
+.header-shell::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.response-shell::after {
+  top: -1px;
+  left: 22%;
+  width: 56%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,.9), transparent);
+  box-shadow: 0 0 10px rgba(34,211,238,.32);
+}
+
+.query-shell::after {
+  top: -1px;
+  left: 30%;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,.82), transparent);
+  box-shadow: 0 0 10px rgba(139,92,246,.24);
+}
+
+.documents-shell::after {
+  left: -1px;
+  top: 14%;
+  width: 1px;
+  height: 72%;
+  background: linear-gradient(180deg, transparent, rgba(34,211,238,.72), transparent);
+  box-shadow: 0 0 9px rgba(34,211,238,.18);
+}
+
+.header-shell::after {
+  left: 8%;
+  bottom: -1px;
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,.62), transparent);
+  box-shadow: 0 0 8px rgba(34,211,238,.16);
+}
+
+/* Keep all decorative effects static. Only functional loading motion remains. */
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Tablet ─────────────────────────────────────────────────────────────── */
