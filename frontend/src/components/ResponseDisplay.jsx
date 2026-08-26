@@ -107,9 +107,7 @@ function InfinityBackdrop() {
         <path d={pathL} fill="none" stroke="#5de8ff" strokeWidth="0.7" opacity="0.55" />
         <path d={pathR} fill="none" stroke="#c4b5fd" strokeWidth="0.7" opacity="0.50" />
 
-        {/* ── Crossing-point centre cap ─────────────────────────────── */}
-        <circle cx="500" cy="250" r="32" fill="none" stroke="url(#bdFull)" strokeWidth="1" opacity="0.28" />
-        <circle cx="500" cy="250" r="18" fill="rgba(6,11,17,0.50)" />
+        {/* ── Keep the mirrored crossing open so its waist stays pointed ─ */}
       </svg>
     </div>
   )
