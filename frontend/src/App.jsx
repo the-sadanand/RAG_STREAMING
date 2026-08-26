@@ -60,6 +60,7 @@ export default function App() {
   return (
     <div style={styles.app}>
       <InfinityAmbient />
+      {/* Shared energy cycle: header 0%, sidebar 25%, answer 50%, input 75%. */}
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} pulseKey={pulseKey} />
 
       <div className="app-main" style={styles.main}>
@@ -68,7 +69,7 @@ export default function App() {
             console.info(`Document "${name}" is now searchable`)
             setPulseKey(k => k + 1)
           }} />
-          <EnergyBorder phase={0} />
+          <EnergyBorder phase={6} />
 
           {queryHistory.length > 0 && (
             <div style={styles.historySection}>
@@ -105,7 +106,7 @@ export default function App() {
               error={error}
               hasQueried={hasQueried}
             />
-            <EnergyBorder phase={-13} />
+            <EnergyBorder phase={12} />
           </div>
 
           <div className="query-shell ui-section" style={styles.inputArea}>
@@ -114,7 +115,7 @@ export default function App() {
               isStreaming={isStreaming}
               connectionState={connectionState}
             />
-            <EnergyBorder phase={-19.5} />
+            <EnergyBorder phase={18} />
           </div>
         </main>
       </div>
