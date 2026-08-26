@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react'
 import DocumentUpload from './components/DocumentUpload'
+import EnergyBorder from './components/EnergyBorder'
+import InfinityAmbient from './components/InfinityAmbient'
 import QueryPanel from './components/QueryPanel'
 import ResponseDisplay from './components/ResponseDisplay'
 import StatusBar from './components/StatusBar'
@@ -14,6 +16,7 @@ export default function App() {
   const [hasQueried, setHasQueried] = useState(false)
   const [queryHistory, setQueryHistory] = useState([])
   const [activeQuery, setActiveQuery] = useState('')
+  const [pulseKey, setPulseKey] = useState(0)
 
   const handleToken = useCallback((t) => setTokens(prev => [...prev, t]), [])
   const handleCitation = useCallback((c) => setCitations(prev => {
@@ -25,6 +28,7 @@ export default function App() {
   const handleDone = useCallback(() => {
     setIsStreaming(false)
     setStatusMessage('')
+    setPulseKey(k => k + 1)
   }, [])
   const handleError = useCallback((e) => {
     setError(e)
@@ -49,18 +53,22 @@ export default function App() {
     setHasQueried(true)
     setActiveQuery(query)
     setQueryHistory(prev => [query, ...prev].slice(0, 10))
+    setPulseKey(k => k + 1)
     sendQuery(query)
   }, [sendQuery])
 
   return (
     <div style={styles.app}>
-      <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} />
+      <InfinityAmbient />
+      <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} pulseKey={pulseKey} />
 
       <div className="app-main" style={styles.main}>
         <aside className="app-sidebar ui-section documents-shell" style={styles.sidebar}>
           <DocumentUpload onDocumentIndexed={(name) => {
             console.info(`Document "${name}" is now searchable`)
+            setPulseKey(k => k + 1)
           }} />
+          <EnergyBorder phase={0} />
 
           {queryHistory.length > 0 && (
             <div style={styles.historySection}>
@@ -97,6 +105,7 @@ export default function App() {
               error={error}
               hasQueried={hasQueried}
             />
+            <EnergyBorder phase={-13} />
           </div>
 
           <div className="query-shell ui-section" style={styles.inputArea}>
@@ -105,6 +114,7 @@ export default function App() {
               isStreaming={isStreaming}
               connectionState={connectionState}
             />
+            <EnergyBorder phase={-19.5} />
           </div>
         </main>
       </div>
@@ -120,6 +130,7 @@ const styles = {
     minHeight: '100vh',
     background: 'var(--bg-base)',
     overflow: 'hidden',
+    position: 'relative',
   },
   main: {
     display: 'flex',
