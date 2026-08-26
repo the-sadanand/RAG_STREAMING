@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import DocumentUpload from './components/DocumentUpload'
 import EnergyBorder from './components/EnergyBorder'
-import InfinityAmbient from './components/InfinityAmbient'
 import QueryPanel from './components/QueryPanel'
 import ResponseDisplay from './components/ResponseDisplay'
 import StatusBar from './components/StatusBar'
@@ -59,7 +58,6 @@ export default function App() {
 
   return (
     <div style={styles.app}>
-      <InfinityAmbient />
       <StatusBar connectionState={connectionState} ttft={ttft} isStreaming={isStreaming} pulseKey={pulseKey} />
 
       <div className="app-main" style={styles.main}>
