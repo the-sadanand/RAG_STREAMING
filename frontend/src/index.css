@@ -94,6 +94,15 @@ textarea { -webkit-appearance: none; }
   overflow: visible;
 }
 
+.infinity-svg path {
+  stroke-linejoin: round;
+}
+
+.infinity-backdrop-svg path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Breathing animations */
 @keyframes infBreath {
   0%, 100% { opacity: calc(var(--infinity-glow) * 0.42); }

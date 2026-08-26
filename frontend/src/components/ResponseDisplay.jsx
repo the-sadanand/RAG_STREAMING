@@ -40,7 +40,7 @@ function InfinityBackdrop() {
 
   return (
     <div style={styles.infinityBackdrop} aria-hidden="true">
-      <svg viewBox="0 0 1000 500" preserveAspectRatio="none" style={styles.infinitySvg}>
+      <svg className="infinity-backdrop-svg" viewBox="0 0 1000 500" preserveAspectRatio="none" style={styles.infinitySvg}>
         <defs>
           {/* Left lobe cyan gradient */}
           <linearGradient id="bdLeft" x1="0" y1="0" x2="1" y2="0">

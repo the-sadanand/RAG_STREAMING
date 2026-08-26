@@ -202,6 +202,16 @@ export default function InfinityAmbient() {
           opacity="0.08"
           className="inf-dust-b"
         />
+
+        {/* Symmetric pointed waist at the center crossing. */}
+        <path
+          d="M 500 242 L 518 260 L 500 278 L 482 260 Z"
+          fill="none"
+          stroke="url(#infGradMain)"
+          strokeWidth="1.2"
+          opacity="0.72"
+          strokeLinejoin="miter"
+        />
       </svg>
 
       {/* Readability mask — darkens the center so text stays legible */}
