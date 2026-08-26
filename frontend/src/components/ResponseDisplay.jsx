@@ -29,85 +29,17 @@ function SkeletonLoader() {
 
 /* ── Rich Infinity backdrop for the empty-state panel ─────────────────── */
 function InfinityBackdrop() {
-  const pathL = "M80 250 C190 80 380 80 500 250 C620 420 810 420 920 250"
-  const pathR = "M80 250 C190 420 380 420 500 250 C620 80 810 80 920 250"
-  // Inner offset strands
-  const pathLi = "M95 250 C198 100 372 100 500 250 C628 400 802 400 905 250"
-  const pathRi = "M95 250 C198 400 372 400 500 250 C628 100 802 100 905 250"
-  // Outer offset strands
-  const pathLo = "M65 250 C182 58  388 58  500 250 C612 442 818 442 935 250"
-  const pathRo = "M65 250 C182 442 388 442 500 250 C612 58  818 58  935 250"
-
   return (
     <div style={styles.infinityBackdrop} aria-hidden="true">
-      <svg className="infinity-backdrop-svg" viewBox="0 0 1000 500" preserveAspectRatio="none" style={styles.infinitySvg}>
-        <defs>
-          {/* Left lobe cyan gradient */}
-          <linearGradient id="bdLeft" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0"   stopColor="#0e7490" stopOpacity="0" />
-            <stop offset="0.4" stopColor="#22d3ee" stopOpacity="0.80" />
-            <stop offset="1"   stopColor="#38bdf8" stopOpacity="0.20" />
-          </linearGradient>
-          {/* Right lobe violet gradient */}
-          <linearGradient id="bdRight" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0"   stopColor="#7c3aed" stopOpacity="0.18" />
-            <stop offset="0.6" stopColor="#8b5cf6" stopOpacity="0.78" />
-            <stop offset="1"   stopColor="#6d28d9" stopOpacity="0" />
-          </linearGradient>
-          {/* Full lemniscate gradient (cyan → violet) */}
-          <linearGradient id="bdFull" x1="0%" y1="50%" x2="100%" y2="50%">
-            <stop offset="0%"   stopColor="#22d3ee" stopOpacity="1" />
-            <stop offset="46%"  stopColor="#38bdf8" stopOpacity="1" />
-            <stop offset="54%"  stopColor="#a78bfa" stopOpacity="1" />
-            <stop offset="100%" stopColor="#8b5cf6" stopOpacity="1" />
-          </linearGradient>
-          {/* Mega atmospheric blur */}
-          <filter id="bdBlurXL" x="-40%" y="-80%" width="180%" height="260%">
-            <feGaussianBlur stdDeviation="32" />
-          </filter>
-          {/* Medium glow blur */}
-          <filter id="bdBlurMD" x="-30%" y="-60%" width="160%" height="220%">
-            <feGaussianBlur stdDeviation="12" />
-          </filter>
-          {/* Small crisp glow */}
-          <filter id="bdBlurSM" x="-20%" y="-40%" width="140%" height="180%">
-            <feGaussianBlur stdDeviation="4.5" />
-          </filter>
-        </defs>
-
-        {/* ── Mega atmospheric glow ─────────────────────────────────── */}
-        <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="80" opacity="0.18" filter="url(#bdBlurXL)" />
-        <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="80" opacity="0.16" filter="url(#bdBlurXL)" />
-
-        {/* ── Large body glow ───────────────────────────────────────── */}
-        <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="36" opacity="0.28" filter="url(#bdBlurMD)" />
-        <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="36" opacity="0.26" filter="url(#bdBlurMD)" />
-
-        {/* ── Medium glow halo ──────────────────────────────────────── */}
-        <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="14" opacity="0.38" filter="url(#bdBlurSM)" />
-        <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="14" opacity="0.34" filter="url(#bdBlurSM)" />
-
-        {/* ── Outer offset strands ──────────────────────────────────── */}
-        <path d={pathLo} fill="none" stroke="url(#bdLeft)"  strokeWidth="10" opacity="0.22" filter="url(#bdBlurSM)" />
-        <path d={pathRo} fill="none" stroke="url(#bdRight)" strokeWidth="10" opacity="0.20" filter="url(#bdBlurSM)" />
-
-        {/* ── Core visible lines ────────────────────────────────────── */}
-        <path d={pathL} fill="none" stroke="url(#bdLeft)"  strokeWidth="2.0" opacity="0.80" />
-        <path d={pathR} fill="none" stroke="url(#bdRight)" strokeWidth="2.0" opacity="0.74" />
-
-        {/* ── Inner fine filaments ──────────────────────────────────── */}
-        <path d={pathLi} fill="none" stroke="url(#bdLeft)"  strokeWidth="1.0" opacity="0.40" />
-        <path d={pathRi} fill="none" stroke="url(#bdRight)" strokeWidth="1.0" opacity="0.36" />
-
-        {/* ── Outer fine filaments ──────────────────────────────────── */}
-        <path d={pathLo} fill="none" stroke="url(#bdLeft)"  strokeWidth="0.7" opacity="0.30" />
-        <path d={pathRo} fill="none" stroke="url(#bdRight)" strokeWidth="0.7" opacity="0.26" />
-
-        {/* ── Highlight filaments (brightest) ──────────────────────── */}
-        <path d={pathL} fill="none" stroke="#5de8ff" strokeWidth="0.7" opacity="0.55" />
-        <path d={pathR} fill="none" stroke="#c4b5fd" strokeWidth="0.7" opacity="0.50" />
-
-        {/* ── Keep the mirrored crossing open so its waist stays pointed ─ */}
+      <svg className="infinity-backdrop-svg" viewBox="0 0 56 32" style={styles.infinitySvg}>
+        <path
+          d="M 4 16 C 8 7, 16 7, 28 16 C 40 25, 48 25, 52 16 C 48 7, 40 7, 28 16 C 16 25, 8 25, 4 16"
+          fill="none"
+          stroke="var(--cyan)"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </div>
   )
@@ -284,10 +216,13 @@ const styles = {
     inset: 0,
     zIndex: 1,
     pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   infinitySvg: {
-    width: '100%',
-    height: '100%',
+    width: '56px',
+    height: '32px',
     display: 'block',
   },
 }
